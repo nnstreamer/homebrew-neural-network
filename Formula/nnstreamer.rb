@@ -10,6 +10,8 @@ class Nnstreamer < Formula
   depends_on "pkg-config" => :build
   depends_on "cmake" => :build
   depends_on "googletest" => :build
+  depends_on "protobuf"
+  depends_on "libtensorflow"
   depends_on "libffi"
   depends_on "glib"
   depends_on "gstreamer"
@@ -19,7 +21,7 @@ class Nnstreamer < Formula
 
   def install
     system "rm", "-rf", "build"
-    system "meson", "build", "--prefix=#{prefix}", "--sysconfdir=#{prefix}/etc", "-Denable-tensorflow=false", "-Denable-tensorflow-lite=false", "-Denable-pytorch=false", "-Denable-caffe2=false"
+    system "meson", "build", "--prefix=#{prefix}", "--sysconfdir=#{prefix}/etc", "-Denable-tensorflow-lite=false", "-Denable-pytorch=false", "-Denable-caffe2=false"
     system "ninja", "-C", "build", "install"
   end
 
