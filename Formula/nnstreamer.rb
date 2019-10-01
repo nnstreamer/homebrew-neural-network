@@ -5,6 +5,7 @@ class Nnstreamer < Formula
   version "0.3.0"
   sha256 "d56e4baa4830b544b823357f927262ac14cac5bd3363c8e428c7ed4922d7209a"
 
+  depends_on :macos
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
