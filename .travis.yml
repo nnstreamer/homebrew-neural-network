@@ -1,0 +1,11 @@
+os: osx
+osx_image: xcode10.3
+
+language: ruby
+
+before_install:
+- brew tap wooksong/neural-network
+- brew update
+
+script:
+- brew install --build-from-source ./Formula/nnstreamer.rb
