@@ -8,4 +8,4 @@ before_install:
 - brew update
 
 script:
-- brew install --build-from-source ./Formula/nnstreamer.rb
+- brew install --build-from-source ./Formula/nnstreamer.rb -v
