@@ -1,9 +1,9 @@
 class Nnstreamer < Formula
   desc "Neural Network (NN) Streamer, Stream Processing Paradigm for Neural Network Apps/Devices."
   homepage "https://github.com/nnsuite/nnstreamer"
-  url "https://github.com/nnsuite/nnstreamer/archive/v0.3.0.tar.gz"
-  version "0.3.0"
-  sha256 "d56e4baa4830b544b823357f927262ac14cac5bd3363c8e428c7ed4922d7209a"
+  url "https://github.com/nnsuite/nnstreamer/archive/v1.0.0.tar.gz"
+  version "1.0.0"
+  sha256 "dd99ede1ecd23272c23863fe8be3638d0fc5b644382142a49ce2bab42da11529"
 
   depends_on "meson" => :build
   depends_on "ninja" => :build
