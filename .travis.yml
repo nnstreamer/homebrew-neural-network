@@ -1,11 +1,13 @@
 os: osx
 osx_image: xcode10.3
 
-language: ruby
+language: c
+compiler: clang
 
 before_install:
+- brew update-reset
 - brew tap wooksong/neural-network
 - brew update
 
 script:
-- brew install --build-from-source ./Formula/nnstreamer.rb
+- brew install --build-from-source ./Formula/nnstreamer.rb -v
