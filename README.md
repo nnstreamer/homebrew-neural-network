@@ -1,6 +1,8 @@
 # Homebrew Neural Network
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/nnstreamer/homebrew-neural-network/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/wooksong/homebrew-neural-network.svg?branch=master)](https://travis-ci.org/wooksong/homebrew-neural-network)
+
 
 An official formula for [NNStreamer](https://github.com/nnsuite/nnstreamer) and unofficial formulae for supporting its related neural network frameworks and tools.
 
