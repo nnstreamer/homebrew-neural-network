@@ -1,9 +1,9 @@
 class Ssat < Formula
   desc "Shell Script Automated Tester (unit testing executable files)"
   homepage "https://github.com/myungjoo/SSAT"
-  url "https://github.com/myungjoo/SSAT/archive/103e4f88ac32f3fdba394fccd6007e99debac159.zip"
-  version "1.0.0"
-  sha256 "92ebd6f644f93595b5815ecb2dd75c7cc7095b851ccea37091732c7f75a6571a"
+  url "https://github.com/myungjoo/SSAT/archive/refs/tags/v1.2.0.tar.gz"
+  version "1.2.0"
+  sha256 "37c8c1bbd5561792d45c233328d86bbffe0534eca30f6681d50f7390d4dfabaa"
 
   def install
     system "ln","-s","ssat.sh", "ssat"
