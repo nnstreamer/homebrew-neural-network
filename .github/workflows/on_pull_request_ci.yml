@@ -11,7 +11,7 @@ jobs:
           ref: "refs/pull/${{ github.event.number }}/merge"
       - name: configure brew running environment
         run: |
-          brew brew update-reset
+          brew update-reset
           brew tap nnstreamer/neural-network
           brew update
       - name: build formula from source
