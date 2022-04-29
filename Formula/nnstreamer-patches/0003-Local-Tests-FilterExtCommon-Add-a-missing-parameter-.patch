@@ -1,0 +1,35 @@
+From f057a58879607d03decd979a6370da650cb518f6 Mon Sep 17 00:00:00 2001
+From: Wook Song <wook16.song@samsung.com>
+Date: Fri, 29 Apr 2022 21:22:57 +0900
+Subject: [PATCH 3/3] Local: Tests/FilterExtCommon: Add a missing parameter of
+ 'sed'
+
+In macOS, the '-i' option of the sed command requires a parameter to
+tell what extension to use for the backup file. To this end, this patch
+appends '.bak' to the '-i' option to fix the build errors on macOS.
+
+Signed-off-by: Wook Song <wook16.song@samsung.com>
+---
+ tests/nnstreamer_filter_extensions_common/meson.build | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tests/nnstreamer_filter_extensions_common/meson.build b/tests/nnstreamer_filter_extensions_common/meson.build
+index 9b4a568e..660aa72d 100644
+--- a/tests/nnstreamer_filter_extensions_common/meson.build
++++ b/tests/nnstreamer_filter_extensions_common/meson.build
+@@ -66,9 +66,9 @@ foreach ext : extensions
+     input : ext_test_template,
+     output : ext_test_path_each,
+     command : [copy, '-f', '@INPUT@', '@OUTPUT@', \
+-      '&&', 'sed', '-i', sed_ext_name_option, '@OUTPUT@', \
+-      '&&', 'sed', '-i', sed_ext_abbrv_option, '@OUTPUT@', \
+-      '&&', 'sed', '-i', sed_ext_mf_option, '@OUTPUT@']
++      '&&', 'sed', '-i', '.bak', sed_ext_name_option, '@OUTPUT@', \
++      '&&', 'sed', '-i', '.bak', sed_ext_abbrv_option, '@OUTPUT@', \
++      '&&', 'sed', '-i', '.bak', sed_ext_mf_option, '@OUTPUT@']
+   )
+ 
+   exec = executable(
+-- 
+2.17.1
+
