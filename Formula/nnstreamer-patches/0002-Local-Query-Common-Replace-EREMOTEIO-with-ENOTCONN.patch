@@ -1,0 +1,140 @@
+From 3e92f8294a9079d04eb32a0d30454598b956226e Mon Sep 17 00:00:00 2001
+From: Wook Song <wook16.song@samsung.com>
+Date: Fri, 29 Apr 2022 10:43:01 +0900
+Subject: [PATCH 2/3] Local: Query/Common: Replace EREMOTEIO with ENOTCONN
+
+This patch replaces EREMOTEIO, which is not supported in macOS, with
+ENOTCONN.
+
+Signed-off-by: Wook Song <wook16.song@samsung.com>
+---
+ .../tensor_query/tensor_query_common.c        | 50 +++++++++++--------
+ 1 file changed, 28 insertions(+), 22 deletions(-)
+
+diff --git a/gst/nnstreamer/tensor_query/tensor_query_common.c b/gst/nnstreamer/tensor_query/tensor_query_common.c
+index 3ce9d869..9bf85c4f 100644
+--- a/gst/nnstreamer/tensor_query/tensor_query_common.c
++++ b/gst/nnstreamer/tensor_query/tensor_query_common.c
+@@ -254,42 +254,48 @@ nnstreamer_query_receive (query_connection_handle connection,
+   switch (conn->protocol) {
+     case _TENSOR_QUERY_PROTOCOL_TCP:
+     {
++      int ret = 0;
+       TensorQueryCommand cmd;
+ 
+-      if (query_tcp_receive (conn->socket, (uint8_t *) & cmd, sizeof (cmd),
+-              conn->cancellable, blocking) < 0) {
++      ret = query_tcp_receive (conn->socket, (uint8_t *) &cmd, sizeof (cmd),
++          conn->cancellable, blocking);
++      if (ret < 0) {
+         nns_logd ("Failed to receive from socket");
+-        return -EREMOTEIO;
++        return ret;
+       }
+       data->cmd = cmd;
+ 
+       if (cmd == _TENSOR_QUERY_CMD_TRANSFER_DATA) {
+         /* receive size */
+-        if (query_tcp_receive (conn->socket, (uint8_t *) & data->data.size,
+-                sizeof (data->data.size), conn->cancellable, 1) < 0) {
++        ret = query_tcp_receive (conn->socket, (uint8_t *) &data->data.size,
++            sizeof (data->data.size), conn->cancellable, 1);
++        if (ret < 0) {
+           nns_logd ("Failed to receive size from socket");
+-          return -EREMOTEIO;
++          return ret;
+         }
+         /* receive data */
+-        if (query_tcp_receive (conn->socket, (uint8_t *) data->data.data,
+-                data->data.size, conn->cancellable, 1) < 0) {
++        ret = query_tcp_receive (conn->socket, (uint8_t *) data->data.data,
++            data->data.size, conn->cancellable, 1);
++        if (ret < 0) {
+           nns_logd ("Failed to receive data from socket");
+-          return -EREMOTEIO;
++          return ret;
+         }
+         return 0;
+       } else if (data->cmd == _TENSOR_QUERY_CMD_CLIENT_ID) {
+         /* receive client id */
+-        if (query_tcp_receive (conn->socket, (uint8_t *) & data->client_id,
+-                CLIENT_ID_LEN, conn->cancellable, 1) < 0) {
++        ret = query_tcp_receive (conn->socket, (uint8_t *) &data->client_id,
++            CLIENT_ID_LEN, conn->cancellable, 1);
++        if (ret < 0) {
+           nns_logd ("Failed to receive client id from socket");
+-          return -EREMOTEIO;
++          return ret;
+         }
+       } else {
+         /* receive data_info */
+-        if (query_tcp_receive (conn->socket, (uint8_t *) & data->data_info,
+-                sizeof (TensorQueryDataInfo), conn->cancellable, 1) < 0) {
++        ret = query_tcp_receive (conn->socket, (uint8_t *) &data->data_info,
++            sizeof (TensorQueryDataInfo), conn->cancellable, 1);
++        if (ret < 0) {
+           nns_logd ("Failed to receive data info from socket");
+-          return -EREMOTEIO;
++          return ret;
+         }
+       }
+     }
+@@ -325,34 +331,34 @@ nnstreamer_query_send (query_connection_handle connection,
+       if (!query_tcp_send (conn->socket, (uint8_t *) & data->cmd,
+               sizeof (TensorQueryCommand), conn->cancellable)) {
+         nns_logd ("Failed to send to socket");
+-        return -EREMOTEIO;
++        return -ENOTCONN;
+       }
+       if (data->cmd == _TENSOR_QUERY_CMD_TRANSFER_DATA) {
+         /* send size */
+         if (!query_tcp_send (conn->socket, (uint8_t *) & data->data.size,
+                 sizeof (data->data.size), conn->cancellable)) {
+           nns_logd ("Failed to send size to socket");
+-          return -EREMOTEIO;
++          return -ENOTCONN;
+         }
+         /* send data */
+         if (!query_tcp_send (conn->socket, (uint8_t *) data->data.data,
+                 data->data.size, conn->cancellable)) {
+           nns_logd ("Failed to send data to socket");
+-          return -EREMOTEIO;
++          return -ENOTCONN;
+         }
+       } else if (data->cmd == _TENSOR_QUERY_CMD_CLIENT_ID) {
+         /* send client id */
+         if (!query_tcp_send (conn->socket, (uint8_t *) & data->client_id,
+                 CLIENT_ID_LEN, conn->cancellable)) {
+           nns_logd ("Failed to send client id to socket");
+-          return -EREMOTEIO;
++          return -ENOTCONN;
+         }
+       } else {
+         /* send data_info */
+         if (!query_tcp_send (conn->socket, (uint8_t *) & data->data_info,
+                 sizeof (TensorQueryDataInfo), conn->cancellable)) {
+           nns_logd ("Failed to send data_info to socket");
+-          return -EREMOTEIO;
++          return -ENOTCONN;
+         }
+       }
+       break;
+@@ -560,13 +566,13 @@ query_tcp_receive (GSocket * socket, uint8_t * data, size_t size,
+ 
+     if (rret == 0) {
+       nns_logi ("Connection closed");
+-      return -EREMOTEIO;
++      return -ENOTCONN;
+     }
+ 
+     if (rret < 0) {
+       nns_logi ("Failed to read from socket: %s", err->message);
+       g_clear_error (&err);
+-      return -EREMOTEIO;
++      return -ENODATA;
+     }
+     bytes_received += rret;
+   }
+-- 
+2.17.1
+
