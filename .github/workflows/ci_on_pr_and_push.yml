@@ -16,6 +16,8 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
+    env:
+      NONINTERACTIVE: 1
     strategy:
       fail-fast: false
       matrix:
@@ -34,6 +36,8 @@ jobs:
           mkdir -p "$(dirname "$tap_dir")"
           rm -rf "$tap_dir"
           mv tap "$tap_dir"
+          # Homebrew refuses to load formulae from a tap that is not trusted.
+          brew trust nnstreamer/neural-network
           brew tap
       - name: build formula from source
         run: brew install --build-from-source --verbose nnstreamer/neural-network/nnstreamer
