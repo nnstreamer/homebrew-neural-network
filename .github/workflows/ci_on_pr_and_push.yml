@@ -8,6 +8,10 @@ on:
     branches:
       - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -18,10 +22,20 @@ jobs:
         # macos-13 is the x86_64 runner; macos-latest is arm64 (Apple silicon).
         os: [macos-13, macos-latest]
     steps:
-      - uses: actions/checkout@v4
-      - name: tap the repository under test
-        run: brew tap nnstreamer/neural-network
+      - uses: actions/checkout@v5
+        with:
+          path: tap
+      # Homebrew refuses to install a formula that is not in a tap, so install
+      # the revision under test as the tap itself. This also makes the formulae
+      # resolve each other from this checkout rather than from master.
+      - name: install the checkout as nnstreamer/neural-network
+        run: |
+          tap_dir="$(brew --repository)/Library/Taps/nnstreamer/homebrew-neural-network"
+          mkdir -p "$(dirname "$tap_dir")"
+          rm -rf "$tap_dir"
+          mv tap "$tap_dir"
+          brew tap
       - name: build formula from source
-        run: brew install --build-from-source --verbose ./Formula/nnstreamer.rb
+        run: brew install --build-from-source --verbose nnstreamer/neural-network/nnstreamer
       - name: test the installed formula
-        run: brew test --verbose ./Formula/nnstreamer.rb
+        run: brew test --verbose nnstreamer/neural-network/nnstreamer
