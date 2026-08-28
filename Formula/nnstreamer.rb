@@ -42,7 +42,9 @@ class Nnstreamer < Formula
     ENV["NNSTREAMER_DECODERS"] = (build_root/"ext/nnstreamer/tensor_decoder").to_s
     ENV["NNSTREAMER_CONVERTERS"] = (build_root/"ext/nnstreamer/tensor_converter").to_s
     ENV["GST_PLUGIN_PATH"] = (build_root/"gst").to_s
-    system "meson", "test", "-C", "build", "-v", "unittest_common", "unittest_plugins"
+    # meson's 30s default is enough on Linux CI but not on a 3-core macOS runner.
+    system "meson", "test", "-C", "build", "-v", "--timeout-multiplier", "10",
+           "unittest_common", "unittest_plugins"
     cd "tests" do
       system "ssat", "--progress=1"
     end
