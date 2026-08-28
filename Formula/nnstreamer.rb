@@ -25,9 +25,9 @@ class Nnstreamer < Formula
   depends_on "protobuf"
 
   def install
-    # orcc-support is disabled because the orc test code in
-    # tests/nnstreamer_plugins/unittest_plugins.cc does not compile on macOS,
-    # where orc_int64 is long while int64_t is long long (nnstreamer/nnstreamer#4862).
+    # orcc-support off: unittest_plugins.cc does not compile against orc on
+    # macOS (nnstreamer/nnstreamer#4862). This also drops the Orc SIMD path from
+    # the installed tensor_transform, which falls back to scalar C.
     system "meson", "setup", "build",
            "--prefix=#{prefix}",
            "--sysconfdir=#{prefix}/etc",
