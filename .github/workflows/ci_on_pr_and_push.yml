@@ -4,23 +4,24 @@ on:
     branches:
       - master
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
     branches:
       - master
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
     strategy:
+      fail-fast: false
       matrix:
-        os: [macos-10.15, macos-11]
+        # macos-13 is the x86_64 runner; macos-latest is arm64 (Apple silicon).
+        os: [macos-13, macos-latest]
     steps:
-      - uses: actions/checkout@v2
-      - name: configure brew running environment
-        run: |
-          brew update-reset
-          brew tap nnstreamer/neural-network
-          brew update
+      - uses: actions/checkout@v4
+      - name: tap the repository under test
+        run: brew tap nnstreamer/neural-network
       - name: build formula from source
-        run: |
-          brew install --build-from-source ./Formula/nnstreamer.rb -v
+        run: brew install --build-from-source --verbose ./Formula/nnstreamer.rb
+      - name: test the installed formula
+        run: brew test --verbose ./Formula/nnstreamer.rb
