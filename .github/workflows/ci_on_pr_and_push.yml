@@ -21,8 +21,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macos-13 is the x86_64 runner; macos-latest is arm64 (Apple silicon).
-        os: [macos-13, macos-latest]
+        # macos-15-intel is the x86_64 runner; macos-latest is arm64 (Apple
+        # silicon). Check that both labels are still offered before editing:
+        # this workflow was stuck for years on runner images that no longer
+        # exist, and macos-13 was retired in December 2025.
+        os: [macos-15-intel, macos-latest]
     steps:
       - uses: actions/checkout@v5
         with:
