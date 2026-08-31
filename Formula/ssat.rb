@@ -1,11 +1,13 @@
 class Ssat < Formula
   desc "Shell Script Automated Tester (unit testing executable files)"
   homepage "https://github.com/myungjoo/SSAT"
-  # SSAT has had no tagged release since v1.2.0; pin the 1.4.0 tree, which adds
-  # the gstTestBackground API that NNStreamer's test groups require.
-  url "https://github.com/myungjoo/SSAT/archive/6f94498fbb615b1d34f419222e39da9680dd7300.tar.gz"
+  # SSAT has had no tagged release since v1.2.0, so pin a commit. This one is
+  # the 1.4.0 tree, which adds the gstTestBackground API that NNStreamer's test
+  # groups require, plus myungjoo/SSAT#27, without which callCompareTest's
+  # prefix comparison is broken on macOS.
+  url "https://github.com/myungjoo/SSAT/archive/f6e6021ad58c44df536be8cf80e5292a561deb30.tar.gz"
   version "1.4.0"
-  sha256 "b76c5a7b03554f1074164518adc424276b328fb55607b17928a727196c631099"
+  sha256 "53baca7653c4fd71a109c8fcf141ab2c638399914ab7d66896019e56acf76580"
   license "Apache-2.0"
 
   def install
